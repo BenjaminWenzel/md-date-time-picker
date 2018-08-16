@@ -291,13 +291,6 @@
             action = document.createElement('div'),
             cancel = document.createElement('button'),
             ok = document.createElement('button');
-        // outer most container of the picker
-
-        // header container of the picker
-
-        // body container of the picker
-
-        // action elements container
 
         // ... add properties to them
         container.id = 'mddtp-picker__' + type;
@@ -573,19 +566,19 @@
         } else {
           hourNow = parseInt(this._sDialog.tDate.format('h'), 10);
           for (var _i = 1, _j = 10; _i <= 12; _i++, _j += 10) {
-            var _div = document.createElement('div'),
-                _span = document.createElement('span');
+            var div = document.createElement('div'),
+                span = document.createElement('span');
 
-            _div.classList.add(cell);
-            _span.textContent = _i;
-            _div.classList.add(rotate + _j);
+            div.classList.add(cell);
+            span.textContent = _i;
+            div.classList.add(rotate + _j);
             if (hourNow === _i) {
-              _div.id = hour;
-              _div.classList.add(selected);
+              div.id = hour;
+              div.classList.add(selected);
               needle.classList.add(rotate + _j);
             }
-            _div.appendChild(_span);
-            docfrag.appendChild(_div);
+            div.appendChild(span);
+            docfrag.appendChild(div);
           }
         }
         // empty the hours
@@ -681,9 +674,9 @@
       value: function _initMonth(view, m) {
         var displayMonth = m.format('MMMM YYYY'),
             innerDivs = view.getElementsByTagName('div');
-        // get the .mddtp-picker__month element using innerDivs[0]
 
         this._fillText(innerDivs[0], displayMonth);
+
         var docfrag = document.createDocumentFragment(),
             tr = innerDivs[3],
             firstDayOfMonth = _moment2.default.weekdays(!0).indexOf(_moment2.default.weekdays(!1, (0, _moment2.default)(m).date(1).day())),
@@ -693,11 +686,6 @@
             past = firstDayOfMonth,
             cellClass = 'mddtp-picker__cell',
             future = lastDayOfMonth;
-        // get the .mddtp-picker__tr element using innerDivs[3]
-
-        /*
-        * @netTrek - first day of month dependented from moment.locale
-        */
 
         if ((0, _moment2.default)().isSame(m, 'month')) {
           today = parseInt((0, _moment2.default)().format('D'), 10);
@@ -716,7 +704,6 @@
           selected += firstDayOfMonth - 1;
         }
         for (var i = 0; i < 42; i++) {
-          // create cell
           var cell = document.createElement('span'),
               currentDay = i - firstDayOfMonth + 1;
 
@@ -751,8 +738,8 @@
         var years = this._sDialog.years,
             currentYear = this._sDialog.tDate.year(),
             docfrag = document.createDocumentFragment(),
-          past = Math.min(currentYear, this._past.year()),
-          future = Math.max(currentYear, this._future.year())
+            past = Math.min(currentYear, this._past.year()),
+            future = Math.max(currentYear, this._future.year());
 
         for (var year = past; year <= future; year++) {
           var li = document.createElement('li');
@@ -877,12 +864,17 @@
             currentYear = document.getElementById('mddtp-date__currentYear');
 
         if (mdDateTimePicker.dialog.view) {
+          me._sDialog.right.style.display = 'none';
+          me._sDialog.left.style.display = 'none';
           viewHolder.classList.add('zoomOut');
           years.classList.remove('mddtp-picker__years--invisible');
+          years.classList.remove('zoomOut');
           years.classList.add('zoomIn');
           // scroll into the view
           currentYear.scrollIntoViewIfNeeded && currentYear.scrollIntoViewIfNeeded();
         } else {
+          me._sDialog.right.style.display = 'initial';
+          me._sDialog.left.style.display = 'initial';
           years.classList.add('zoomOut');
           viewHolder.classList.remove('zoomOut');
           viewHolder.classList.add('zoomIn');
@@ -1040,11 +1032,6 @@
         };
 
         function moveStep(aClass, to) {
-          /**
-          * [stepBack to know if the to step is going back or not]
-          *
-          * @type {Boolean}
-          */
           var stepBack = !1,
               next = me._sDialog.next,
               current = me._sDialog.current,
@@ -1102,15 +1089,13 @@
               me._sDialog.tDate = me._getMonth(me._sDialog.tDate, 1);
             }
             me._initViewHolder();
-          }, 350);
-          setTimeout(function () {
             if (!left.classList.contains('mddtp-button--disabled')) {
               left.removeAttribute('disabled');
             }
             if (!right.classList.contains('mddtp-button--disabled')) {
               right.removeAttribute('disabled');
             }
-          }, 400);
+          }, 350);
         }
       }
     }, {
@@ -1119,7 +1104,12 @@
         var me = this;
         el.onclick = function (e) {
           if (e.target && e.target.nodeName === 'LI') {
-            var selected = document.getElementById('mddtp-date__currentYear');
+            var selected = document.getElementById('mddtp-date__currentYear'),
+                subtitle = me._sDialog.subtitle,
+                titleDay = me._sDialog.titleDay,
+                titleMonth = me._sDialog.titleMonth;
+
+
             // clear previous selected
             selected.id = '';
             selected.classList.remove('mddtp-picker__li--current');
@@ -1130,6 +1120,11 @@
             me._switchToDateView(el, me);
             // set the tdate to it
             me._sDialog.tDate.year(parseInt(e.target.textContent, 10));
+            // update temp date object with the date selected
+            me._sDialog.sDate = me._sDialog.tDate.clone();
+            me._fillText(subtitle, me._sDialog.tDate.year());
+            me._fillText(titleDay, me._sDialog.tDate.format('ddd, '));
+            me._fillText(titleMonth, me._sDialog.tDate.format('MMM D'));
             // update the dialog
             me._initViewHolder();
           }
@@ -1291,7 +1286,6 @@
             cancel = this._sDialog.cancel,
             onCancel = new CustomEvent('onCancel'),
             onOk = new CustomEvent('onOk');
-        // create cutom events to dispatch
 
         cancel.onclick = function () {
           me.toggle();
@@ -1376,9 +1370,6 @@
             tr = document.createElement('div'),
             weekDays = _moment2.default.weekdaysMin(!0).reverse(),
             week = 7;
-        /**
-        * @netTrek - weekday dependented from moment.locale
-        */
 
         while (week--) {
           var span = document.createElement('span');
