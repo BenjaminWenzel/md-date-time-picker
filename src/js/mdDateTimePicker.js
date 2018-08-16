@@ -919,8 +919,8 @@ class mdDateTimePicker {
       // scroll into the view
       currentYear.scrollIntoViewIfNeeded && currentYear.scrollIntoViewIfNeeded()
     } else {
-      me._sDialog.right.style.display = 'initial'
-      me._sDialog.left.style.display = 'initial'
+      me._sDialog.right.style.display = 'block'
+      me._sDialog.left.style.display = 'block'
       years.classList.add('zoomOut')
       viewHolder.classList.remove('zoomOut')
       viewHolder.classList.add('zoomIn')
